@@ -1,25 +1,18 @@
-/*----------------------------------------------------------------------------*/
-/* Guilherme Ozari de Almeida                                                 */
-/* email: goaex-developer@yahoo.com.br                                        */
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* File:        Makefile                                                      */
-/* Date:        18.06.2012                                                    */
-/* Version:     0.1                                                           */
-/* Author:      Guilherme Almeida                                             */
-/*                                                                            */
-/* Description: Main file for SLXS golden model                               */
-/* Notes:                                                                     */
-/* Issues:                                                                    */
-/* Revision history                                                           */
-/*         Rev        Date        Who    Description                          */
-/*         0.1        18/06/12    GOA    Inicial release                      */
-/*                                                                            */
-/*                                                                            */
-/*          -Reproduction in whole or in part is prohibited without-          */
-/*                -the written consent of the copyright owner-                */
-/*----------------------------------------------------------------------------*/
-
+/*
+ * The program simulates a slxs processor.It takes 4 files.
+ * Each file has the form of intel hex file format.
+ * slxs a,b,c,d
+ * D = *b-*a
+ * C = D ^ c
+ * T = C >>1
+ *
+ * If MSB(d) =  0 : *b = C
+ * else if MSB(d) 1 : *b = T
+ *
+ * if D <= 0 goto d
+ * else got to PC+1
+ *
+ */
 #include <stdio.h>
 
 
@@ -68,7 +61,6 @@ int main(int argc, char **argv){
     printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
   }
   // core ///////////////////////////////////////////////////////
-  //  while(!(mem[0][(PC>>2) & 16383]==0 && mem[1][(PC>>2) & 16383]==0 && mem[2][(PC>>2) & 16383]==0 && mem[3][(PC>>2) & 16383]==PC)){
   while(!
         (mem[0][(PC>>2) & 16383]==mem[1][(PC>>2) & 16383]
          && mem[1][(PC>>2) & 16383]==mem[2][(PC>>2) & 16383]
@@ -92,11 +84,13 @@ int main(int argc, char **argv){
     A = mem[A & 3][(A>>2) & 16383];
     B = mem[addr_B & 3][(addr_B>>2) & 16383];
     C = mem[C & 3][(C>>2) & 16383];
+
     // ALU //////////////////////////////////////////////////////
     Delta = (B - A) & 131071;
     Gamma = (Delta ^ C) & 131071;
     Theta = (Gamma>>1) & 65535;
-    // Write memory /////////////////////////////////////////////
+
+    // Write to  memory /////////////////////////////////////////////
     if((D>>16) & 1) {
       mem[addr_B & 3][addr_B>>2] = Theta;
     }
@@ -110,7 +104,6 @@ int main(int argc, char **argv){
     else {
       PC+=4;
     }
-    //    scanf("%c", &next);
   }
   ///////////////////////////////////////////////////////////////
 
@@ -119,6 +112,5 @@ int main(int argc, char **argv){
   for(i=0;i<6;i++){
     printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
   }
-
   return 0;
 }
