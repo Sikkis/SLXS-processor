@@ -14,7 +14,7 @@
  *
  */
 #include <stdio.h>
-
+#include <stdlib.h>
 
 int main(int argc, char **argv){
 
@@ -25,8 +25,9 @@ int main(int argc, char **argv){
   int A, B, C, D, addr_B, PC=0,Delta, Gamma, Theta;;
   int i, round=0;
   int count_file=0;
+  int output=0;
 
-  if(argc < 5){
+  if(argc < 6){
     printf("ERROR: to run the program you need to provide 4 input files for memeory data.\n");
     return -1;
   }
@@ -35,6 +36,7 @@ int main(int argc, char **argv){
   file[1]=fopen(argv[2], "r");
   file[2]=fopen(argv[3], "r");
   file[3]=fopen(argv[4], "r");
+  output = strtol (argv[5],NULL,10);
 
   // Read input files ///////////////////////////////////////////
   while(count_file < 4){
@@ -112,5 +114,14 @@ int main(int argc, char **argv){
   for(i=0;i<6;i++){
     printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
   }
+  //Print memory if arg5=1//
+  if(output==1){
+    file[0]=fopen("output.hex", "w");
+    for(i=0;i<6;i++){
+      fprintf(file[0], "%05x %05x %05x %05x %05x\n",i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
+    }
+    fclose(file[0]);
+  }
+
   return 0;
 }

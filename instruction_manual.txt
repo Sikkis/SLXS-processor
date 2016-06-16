@@ -1,0 +1,54 @@
+SLXS Definition:
+slxs a,b,c,d
+ D = *b-*a
+ C = D ^ c
+ T = C >>1
+
+ If MSB(d) =  0 : *b = C
+ else if MSB(d) 1 : *b = T
+ if D <= 0 goto d
+ else got to PC+1
+-------------------------------------------------------------------------------
+Intraction Manual:
+ Variables:
+  Z = 00000
+  M = 1FFFF (-1)
+  U = 00001
+  X = 0xxxx (x= *[0..F])
+  Y = 1xxxx
+  var
+Commands:
+ CLEAR : var, var, Z  , X
+ JUMP  : Z  , Z  , Z  , X
+ MOV   : var, var, va1, X
+ LOOP  : Z  , Z  , Z  , $       | current address
+ SHIFT : Z  , var, Z  , Y       | var >> 1
+ XOR   : Z  , var, va1, X
+ ADD   : M  , var, Z  , X       | var = var+1
+ SUB   : U  , var, Z  , X       | var = var-1
+
+----------------------------------------
+ AND + OR are more complex instractions:
+ Based on x + y = (x ^ y) + 2 (x & y) and x + y = 2(x | y) - (x ^ y).
+ 1. x & y = (x + y + (x ^ y))/2
+ 2. x | y = (x + y - (x ^ y))/2
+  
+  Variables:
+   res = 00000
+   xor = 00000
+   y,x
+
+ OR    : res, res, x  , $ + 1   | res = x
+         y  , my , Z  , $ + 1   | my  = -y
+         my , res, Z  , $ + 1   | res = x + y
+         xor, xor, x  , $ + 1   | xor = x
+         Z  , xor, y  , $ + 1   | xor = x ^ y
+         xor, mxr, Z  , $ + 1   | mxr = -xor
+         mxr, res, Z  , Y       | res = (res + xor) >> 1
+
+  AND  :  res, res, x  , $ + 1   | res = x
+          y  , my , Z  , $ + 1   | my  = -y
+          my , res, Z  , $ + 1   | res = x + y
+          xor, xor, x  , $ + 1   | xor = x
+          Z  , xor, y  , $ + 1   | xor = x ^ y
+          xor, res, Z  , Y       | res = (res - xor ) >> 1
