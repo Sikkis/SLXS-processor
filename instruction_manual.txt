@@ -4,10 +4,14 @@ slxs a,b,c,d
  C = D ^ c
  T = C >>1
 
- If MSB(d) =  0 : *b = C
- else if MSB(d) 1 : *b = T
- if D <= 0 goto d
- else got to PC+1
+ If MSB(d) =  0
+  *b = C
+ else if MSB(d) = 1
+  *b = T
+ if D <= 0
+  goto d
+ else
+  goto PC+1
 -------------------------------------------------------------------------------
 Intraction Manual:
  Variables:
@@ -32,7 +36,7 @@ Commands:
  Based on x + y = (x ^ y) + 2 (x & y) and x + y = 2(x | y) - (x ^ y).
  1. x & y = (x + y + (x ^ y))/2
  2. x | y = (x + y - (x ^ y))/2
-  
+
   Variables:
    res = 00000
    xor = 00000
