@@ -1,6 +1,6 @@
 0000  00004 00004 00004 0000C  |  S Z Z Z 0x008        |  Initial line, jump to code
-0004  00000 1FFFF 00001 00000  |  Zero Minus One xor   |  Constants and variables
-0008  00000 00011 00010 00000  |  res  x     y   my    |
+0004  00000 1FFFF 00001 00000  |  Zero(4) Minus(5) One(6) xor(7)   |  Constants and variables
+0008  00000 00011 00010 00000  |  res(8)  x(9)     y(A)   my(B)    |
 000C  00008 00008 00009 00010  |  res, res, x  , $ + 1 |  Code: res = x
 0010  0000A 0000B 00004 00014  |  y  , my , Z  , $ + 1 |  my  = - y
 0014  0000B 00008 00004 00018  |  my , res, Z  , $ + 1 |  res = x + y
