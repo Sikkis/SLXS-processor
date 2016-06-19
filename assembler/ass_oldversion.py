@@ -59,22 +59,42 @@ def write_file():
     code_starts = var_counter+ var_counter/4
 
     #Jump to the  code first line.
-    #f.write('0000 00004 00004 00004 '+'{:05x}'.format(code_starts)+"\n")
+    f.write('0000 00004 00004 00004 '+'{:05x}'.format(code_starts)+"\n")
     memory[0].append([4,4,4,code_starts])
 
     i = 1
     temp = []
     for x in variables:
         temp.append(x[1])
+        print temp
         if x[2]%4 == 3:
             memory[i].append(temp)
             i+=1
             temp = []
-    #fill the empty variable slots
     for x in range(0,var_counter/4):
         temp.append(0)
     memory[i].append(temp)
     i+=1
+    print memory[0]
+    print memory[1]
+    print memory[2]
+    print memory[3]
+    #Write the variables
+    i = 4
+    f.write('{:04x}'.format(i)+" ")
+    for x in variables:
+        f.write('{:05x}'.format(x[1])+" ")
+        if x[2]%4 == 3:
+            i+=4
+            f.write("\n"+'{:04x}'.format(i)+" ")
+
+    #fill the empty variable slots
+    for x in range(0,var_counter/4):
+        f.write("00000 ")
+    f.write("\n")
+    i+=4
+
+    #end of writing variables
 
     #Write instructions
     for inst in instructions:
@@ -85,14 +105,11 @@ def write_file():
                 print "aa"
         else:
             print "normal"
+    while i<=0xFFFF:
+        f.write('{:04x}'.format(i))
+        f.write("\n")
+        i+=4
 
-    #Write the file
-    for x in xrange(0,4):
-        f.write('{:04x}'.format(memory[x][0])+" ")
-        f.write('{:05x}'.format(memory[x][1][0])+" ")
-        f.write('{:05x}'.format(memory[x][1][1])+" ")
-        f.write('{:05x}'.format(memory[x][1][2])+" ")
-        f.write('{:05x}'.format(memory[x][1][3])+"\n")
     f.close()
 
 
