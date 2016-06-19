@@ -1,12 +1,12 @@
-Z:0
-mxr: 0
+Z:0 //asdf
+mxr: 0 //ad
  One :1
 xor:0Xa
 res:0x0
-x:10
+x:/*asdf*/10
 y :11
 my:   50
-code: res,res,x;
+code: res,res,x; /*asdfsafd*/
 y,my, Z;
 my,res,  Z;
 xor,xor,x;

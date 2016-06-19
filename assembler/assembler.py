@@ -32,6 +32,18 @@ def read_file(filename):
     for line in f:
         #remove white spaces from line
         line = line.replace(" ", "")
+
+        #delete whole line comments
+        if line.find("//") > 0:
+            t = line.split("//")
+            line= t[0]
+
+        #delete block comments
+        if line.find("/*") > 0:
+            t = line.split("/*")
+            t1 = t[1].split("*/")
+            line = t[0]+t1[1]
+            print line
         #if line is an instruction
         if line.find(";") > 0:
             line = line.strip(";\n").split(",")

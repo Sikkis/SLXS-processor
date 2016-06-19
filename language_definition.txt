@@ -41,7 +41,7 @@ Some notes:
 
   d. Functions with jump
     var{:}var{,}var{,}var{,}var{;}
-    
+
 --------------------------------------------------------------------------------
 3. Comments: Two types:
   Whole line:
@@ -52,7 +52,4 @@ Some notes:
   Boxed:
   {/*} [^]* {*/}
   Example:
-  /* i am
-   a comment
-  */
-  /*comment*/
+  S :/* i am a comment */ 10
