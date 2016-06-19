@@ -25,8 +25,8 @@ def read_file(filename):
     global instructions
     global var_counter
     instructions = []
-    variables = [["Zero",0,4]] # name,value,address
-    var_counter = 5
+    variables = [["Zero",0,4]] # [name,value,address]
+    var_counter = 5 # the variable location inside the memory
 
     f = open(filename, 'r')
     for line in f:
@@ -43,7 +43,6 @@ def read_file(filename):
                 variables.append([line[0],int(line[1],16),var_counter])
             else:
                 variables.append([line[0],int(line[1],10),var_counter])
-
             var_counter+=1
     f.close()
 
@@ -54,14 +53,12 @@ def write_file():
     while i<=0xFFFF:
         memory.append([i])
         i+=4
-    #Write the file
-    f = open ("output.txt",'w')
     code_starts = var_counter+ var_counter/4
 
-    #Jump to the  code first line.
-    #f.write('0000 00004 00004 00004 '+'{:05x}'.format(code_starts)+"\n")
+    #First line writen :Jump to the code.
     memory[0].append([4,4,4,code_starts])
 
+    #store variables to memory
     i = 1
     temp = []
     for x in variables:
@@ -87,6 +84,8 @@ def write_file():
             print "normal"
 
     #Write the file
+    f = open ("output.txt",'w')
+    #Write the file
     for x in xrange(0,4):
         f.write('{:04x}'.format(memory[x][0])+" ")
         f.write('{:05x}'.format(memory[x][1][0])+" ")
@@ -94,7 +93,6 @@ def write_file():
         f.write('{:05x}'.format(memory[x][1][2])+" ")
         f.write('{:05x}'.format(memory[x][1][3])+"\n")
     f.close()
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
