@@ -2,7 +2,7 @@ Z:0
 mxr:0
 One:1
 xor:0Xa
-res:0
+res:0x0
 x:10
 y:11
 my:50
