@@ -1,14 +1,14 @@
 Z:0
-mxr:0
-One:1
+mxr: 0
+ One :1
 xor:0Xa
 res:0x0
 x:10
-y:11
-my:50
+y :11
+my:   50
 code: res,res,x;
-y,my,Z;
-my,res,Z;
+y,my, Z;
+my,res,  Z;
 xor,xor,x;
-Z,xor,y;
-mxr,res,Z,0x1;
+Z,xor , y;
+mxr, res,Z,0x1;

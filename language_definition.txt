@@ -1,0 +1,58 @@
+SLXS Language Definition (Regular Expressions) for assembler:
+
+SLXS language is contains 3 types
+1. variables
+2. instructions
+3. comments
+
+Some notes:
+  - Whitespaces and tabs can be used in the assembler but they are removed
+  - Numbers are of 16 bit length.
+
+--------------------------------------------------------------------------------
+1. Variables: [ %s : var ]
+  Regular Expression:
+  ([A..Z][a..z])+ ([A..Z][a..z][0..9])* {:} ([0..9]+|({0x}|{0X})[0..9]*[A..F]*[a..f]*){$}
+
+  For system variables "_" is added in the start:
+  {_}([A..Z][a..z])+ ([A..Z][a..z][0..9])* {:} ([0..9]+|({0x}|{0X})[0..9]*[A..F]*[a..f]*){$}
+
+  Examples:
+    Z:0
+    temp1:0xaB
+    _zero: 0
+
+--------------------------------------------------------------------------------
+2. Instructions: 4 types: Each instruction separates variables with "," and it ends with ";"
+
+  var = {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+
+  a.Simple
+    Simple instruction has 3 variables.
+    Regular Expression:
+    var{,}var{,}var{;}
+
+  b.Jumps
+    The 4th var is the address that we want to jump to
+    var{,}var{,}var{,}var{;}
+
+  c.Functions
+    var{:}var{,}var{,}var{;}
+
+  d. Functions with jump
+    var{:}var{,}var{,}var{,}var{;}
+    
+--------------------------------------------------------------------------------
+3. Comments: Two types:
+  Whole line:
+  {\\}[^]*$
+  Example:
+  \\ im a commment
+
+  Boxed:
+  {/*} [^]* {*/}
+  Example:
+  /* i am
+   a comment
+  */
+  /*comment*/

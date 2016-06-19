@@ -30,6 +30,8 @@ def read_file(filename):
 
     f = open(filename, 'r')
     for line in f:
+        #remove white spaces from line
+        line = line.replace(" ", "")
         #if line is an instruction
         if line.find(";") > 0:
             line = line.strip(";\n").split(",")
@@ -38,12 +40,14 @@ def read_file(filename):
         #else if line is a variable
         else:
             line = line.strip("\n").split(":")
-            #add variable to array and check if its a hex or decimal
+            # add variable to array and check if its a hex or decimal
             if line[1].find("x") > 0 or line[1].find("X") > 0:
                 variables.append([line[0],int(line[1],16),var_counter])
             else:
                 variables.append([line[0],int(line[1],10),var_counter])
             var_counter+=1
+    print instructions
+    print variables
     f.close()
 
 def write_file():
@@ -55,7 +59,7 @@ def write_file():
         i+=4
     code_starts = var_counter+ var_counter/4
 
-    #First line writen :Jump to the code.
+    #First line writen :Jump to the codefirst line.
     memory[0].append([4,4,4,code_starts])
 
     #store variables to memory
