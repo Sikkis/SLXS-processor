@@ -6,7 +6,13 @@ import sys, getopt
 #-h or --help:
 #   Prints the manual of the program
 # -i <filename> or --input <filename> :
-#   Takes an slsx progam and create the memory blocks ...
+#   Takes an slsx progam and create the memory file. It has the following format:
+#       ADDRESS VALUE VALUE VALUE VALUE
+#       example:
+#          0000 00004 00004 00004 0000C
+#   1. ADDRESS: its an 16 bit hex number that reference a physical memory.
+#   2. VALUE:   a 17 bit hex number that contains address or variable stored into
+#               the memory.
 # -s or -intel_hex:
 #   This options converts the the address code of the SLXS processor to the Intel
 #   Hex file format. It takes the memory array and produces 4 output files.
