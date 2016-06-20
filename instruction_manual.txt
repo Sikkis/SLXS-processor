@@ -15,12 +15,13 @@ slxs a,b,c,d
 -------------------------------------------------------------------------------
 Intraction Manual:
  Variables:
-  Z = 00000
-  M = 1FFFF (-1)
-  U = 00001
-  X = 0xxxx (x= *[0..F])
-  Y = 1xxxx
-  var
+  Z:  00000
+  M:  1FFFF //(-1)
+  U:  00001
+  X:  0xxxx //(x= *[0..F])
+  Y:  1xxxx
+  var:00111 //
+
 Commands:
  CLEAR : var, var, Z  , X
  JUMP  : Z  , Z  , Z  , X
