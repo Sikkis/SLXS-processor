@@ -11,5 +11,5 @@ res : 0x0
 my,res, Z;
 xor,xor,x;
 Z ,xor , y;
-mxr, res,Z,temp;
-temp: res,res,x;
+mxr, res,Z,temp_shift;
+temp: res,res,x_shift;

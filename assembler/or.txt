@@ -6,10 +6,12 @@ res : 0
 x : 0x11
 y: 0x10
 my: 0
+
+/*main function*/
 _main:res, res, x;
 y  , my , Z;
 my , res, Z;
 xor, xor, x;
 Z  , xor, y;
 xor, mxr, Z;
-mxr, res, Z;
+mxr, res, Z_shift;

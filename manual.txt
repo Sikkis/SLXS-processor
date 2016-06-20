@@ -1,0 +1,175 @@
+SLXS (SubLeqXorShr) Definition:
+slxs a,b,c,d
+ D = *b-*a
+ C = D ^ c
+ T = C >>1
+
+ If MSB(d) =  0
+  *b = C
+ else if MSB(d) = 1
+  *b = T
+ if D <= 0
+  goto d
+ else
+  goto PC+1
+--------------------------------------------------------------------------------
+SLXS Language Definition (Regular Expressions) for assembler:
+
+SLXS language contains 3 types
+1. variables
+2. instructions
+3. comments
+
+Some notes:
+  - Empty lines, whitespaces and tabs can be used in the code but they will be removed
+  - Numbers are of 16 bit length.
+
+--------------------------------------------------------------------------------
+1. Variables: [ %s : var ]
+  Regular Expression:
+  ([A..Z][a..z])+ ([A..Z][a..z][0..9])* {:} ([0..9]+|({0x}|{0X})[0..9]*[A..F]*[a..f]*){$}
+
+  For system variables "_" is added at the start:
+  {_}([A..Z][a..z])+ ([A..Z][a..z][0..9])* {:} ([0..9]+|({0x}|{0X})[0..9]*[A..F]*[a..f]*){$}
+
+  Examples:
+    Z:0
+    temp1:0xaB
+    _zero: 0
+
+--------------------------------------------------------------------------------
+2. Instructions: 4 types: Each instruction separates variables with "," and it ends with ";"
+
+  var = {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+  label == {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+
+  a.Simple
+    Simple instructions have 3 variables.
+    Regular Expression:
+    var{,}var{,}var{;}
+
+  b.Jumps
+    The 4th var is the address that we want to jump to
+    var{,}var{,}var{,}label{;}
+
+  c.Functions
+    label{:}var{,}var{,}var{;}
+
+  d.Functions with jump
+    label{:}var{,}var{,}var{,}var{;}
+
+  For each of the previous types the string "_shift" can be appended to the
+  last variable/label to create the shift command.
+--------------------------------------------------------------------------------
+3. Comments: Two types:
+  Whole line:
+  {\\}[^]*$
+  Example:
+  \\ I am a commment
+
+  Boxed:
+  {/*} [^]* {*/}
+  Example:
+  S :/* I am a comment */ 10
+--------------------------------------------------------------------------------
+Micro Assembler initialized variables/labels and instructions
+Variables:
+_zero:0 on address 0004
+The _zero variable is initialize by the micro assembler. It is used in the following
+instructions.
+
+Labels:
+_main:
+It is the main function of the program.
+
+_shift:
+Appends at the end of the variable/label so the assembler knows to create the
+shift command
+
+Instructions:
+_zero,_zero,_zero,_main;
+This is the first line of code for each program and it jumps to the main function.
+The assembler always adds it to the start of the code.
+
+loop: _zero,_zero,_zero,loop;
+This instruction indicates the end of the program. It is also added from the assembler. It is needed so that the slxs simulator knows when to stop.
+--------------------------------------------------------------------------------
+Code example of OR:
+Z   : 0 // zero value
+mxr : 0 //-xor
+One : 1
+xor : 0
+res : 0
+x   : 0x11
+y   : 0x10
+my  : 0 // -y
+
+/*main function*/
+_main:res, res, x;
+y  , my , Z;
+my , res, Z;
+xor, xor, x;
+Z  , xor, y;
+xor, mxr,Z;
+mxr, res,Z_shift;
+
+Result:
+0000 00004 00004 00004 00010
+0004 00000 00000 00000 00001
+0008 00000 00000 00011 00010
+000c 00000 00000 00000 00000
+0010 00009 00009 0000a 00014
+0014 0000b 0000c 00005 00018
+0018 0000c 00009 00005 0001c
+001c 00008 00008 0000a 00020
+0020 00005 00008 0000b 00024
+0024 00008 00006 00005 00028
+0028 00006 00009 00005 1002c
+002c 00004 00004 00004 0002c
+--------------------------------------------------------------------------------
+Instruction Manual:
+To define the basic instructions we need the following variables
+
+Variables:
+  Z:  00000
+  M:  1FFFF //(-1)
+  U:  00001
+  Label:  address //(x= *[0..F])
+  var:00111 //
+
+Commands:
+ CLEAR : var, var, Z  , Label
+ JUMP  : Z  , Z  , Z  , Label
+ MOV   : var, var, va1, Label
+ LOOP  : Z  , Z  , Z  , $           | current address
+ SHIFT : Z  , var, Z  , Label_shift | var >> 1
+ XOR   : Z  , var, va1, Label
+ ADD   : M  , var, Z  , Label       | var = var+1
+ SUB   : U  , var, Z  , Label       | var = var-1
+
+the commmands can be writen without the Label if jump is not needed
+----------------------------------------
+ AND + OR are more complex instructions:
+ Based on x + y = (x ^ y) + 2 (x & y) and x + y = 2(x | y) - (x ^ y).
+ 1. x & y = (x + y + (x ^ y))/2
+ 2. x | y = (x + y - (x ^ y))/2
+
+ Extra Variables:
+   res = 00000
+   xor = 00000
+   y,x
+
+ OR    : res, res, x      | res = x
+         y  , my , Z      | my  = -y
+         my , res, Z      | res = x + y
+         xor, xor, x      | xor = x
+         Z  , xor, y      | xor = x ^ y
+         xor, mxr, Z      | mxr = -xor
+         mxr, res, Z_shift| res = (res + xor) >> 1
+
+  AND  : res, res, x      | res = x
+         y  , my , Z      | my  = -y
+         my , res, Z      | res = x + y
+         xor, xor, x      | xor = x
+         Z  , xor, y      | xor = x ^ y
+         xor, res, Z_shift| res = (res - xor ) >> 1
