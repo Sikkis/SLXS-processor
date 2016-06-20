@@ -173,3 +173,18 @@ the commmands can be writen without the Label if jump is not needed
          xor, xor, x      | xor = x
          Z  , xor, y      | xor = x ^ y
          xor, res, Z_shift| res = (res - xor ) >> 1
+--------------------------------------------------------------------------------
+Intel Hex Format Files that are used on simulator:
+
+ Each Intel Hex block in the SLXS simulator contains the following data:
+  1. Start code, one character, an ASCII colon ':'.
+  2. Byte count, two hex digits, indicating the number of bytes (hex digit
+     pairs) in the data field.
+  3. Address, four hex digits, representing the 16-bit beginning memory address
+    offset of the data.
+  4. Record type, two hex digits, 00 to 05,in the implimentation the 01 and 03 is
+     used only
+  5. Data, six hex digits.
+  6. Checksum, two hex digits, a computed value that can be used to verify the
+     record has no errors.
+--------------------------------------------------------------------------------

@@ -30,7 +30,14 @@ def main(argv):
     for opt, arg in opts:
         #Prints in the standar output the help bar
         if opt in ('-h',"--help"):
-            print "SLSX assembler"
+            print "SLSX  micro assembler:"
+            print "usage: assembler.py -i <filename> [-s]"
+            print "------------------------------------------------------------"
+            print "Options:"
+            print " 1. [-h|--help] prints the help menu."
+            print " 2. [-i|--input] takes as an argument a file with SLSX code\n    and creates an output file with the memory addresses."
+            print " 3. [-s|--intel_hex] creates four files in hex_intel format\n    that can be used in the simulator. "
+            print "------------------------------------------------------------"
             sys.exit()
         # Calls the read_file function
         elif opt in ("-i","--input"):
@@ -182,7 +189,9 @@ def write_file():
         f.write('{:05x}'.format(memory[x][1][1])+" ")
         f.write('{:05x}'.format(memory[x][1][2])+" ")
         f.write('{:05x}'.format(memory[x][1][3])+"\n")
+
     f.close()
+
 def intel_hex_converter():
 
     f = [0,1,2,3]
@@ -194,8 +203,11 @@ def intel_hex_converter():
     size = 0x03
     typ  = 0
     address = 0
+
+    #take memory array and create intel_hex files
     for x in xrange(0,i+1):
-        print memory[x]
+
+        #for each memory address write to correct file
         for t in xrange(0,4):
             #sum is the two's compliment that is insert on the end of each block
             sum = -(size+(address&0xff)+(address>>8&0xff)+typ+(memory[x][1][t]&0xff)+(memory[x][1][t]>>8&0xff)+(memory[x][1][t]>>16&0xff))&0xff;
