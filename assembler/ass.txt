@@ -13,3 +13,14 @@ xor,xor,x;
 Z ,xor , y;
 mxr, res,Z,temp_shift;
 temp: res,res,x_shift;
+
+//Errors:
+//xor, mxr;
+//xor, mxr, Z,z,z;
+//Temp : 0x1asdf
+//Temp : 1asdf
+//Z:12
+//_z :123
+//_label: res,res,x;
+//temp: res,res,x;
+//_main: res,res,x;

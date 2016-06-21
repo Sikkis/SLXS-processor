@@ -94,39 +94,6 @@ The assembler always adds it to the start of the code.
 loop: _zero,_zero,_zero,loop;
 This instruction indicates the end of the program. It is also added from the assembler. It is needed so that the slxs simulator knows when to stop.
 --------------------------------------------------------------------------------
-Code example of OR:
-Z   : 0 // zero value
-mxr : 0 //-xor
-One : 1
-xor : 0
-res : 0
-x   : 0x11
-y   : 0x10
-my  : 0 // -y
-
-/*main function*/
-_main:res, res, x;
-y  , my , Z;
-my , res, Z;
-xor, xor, x;
-Z  , xor, y;
-xor, mxr,Z;
-mxr, res,Z_shift;
-
-Result:
-0000 00004 00004 00004 00010
-0004 00000 00000 00000 00001
-0008 00000 00000 00011 00010
-000c 00000 00000 00000 00000
-0010 00009 00009 0000a 00014
-0014 0000b 0000c 00005 00018
-0018 0000c 00009 00005 0001c
-001c 00008 00008 0000a 00020
-0020 00005 00008 0000b 00024
-0024 00008 00006 00005 00028
-0028 00006 00009 00005 1002c
-002c 00004 00004 00004 0002c
---------------------------------------------------------------------------------
 Instruction Manual:
 To define the basic instructions we need the following variables
 
@@ -174,6 +141,42 @@ the commmands can be writen without the Label if jump is not needed
          Z  , xor, y      | xor = x ^ y
          xor, res, Z_shift| res = (res - xor ) >> 1
 --------------------------------------------------------------------------------
+Code example of OR:
+Z   : 0 // zero value
+mxr : 0 //-xor
+One : 1
+xor : 0
+res : 0
+x   : 0x11
+y   : 0x10
+my  : 0 // -y
+
+/*main function*/
+_main:res, res, x;
+y  , my , Z;
+my , res, Z;
+xor, xor, x;
+Z  , xor, y;
+xor, mxr,Z;
+mxr, res,Z_shift;
+
+
+Result:                                         Explanation:
+                                    The first column indicates the memory address.
+                                    the other have either the values or addresses.
+0000 00004 00004 00004 00010      |   0 , 0 , 0 ,_main          | Jump to main
+0004 00000 00000 00000 00001      |   0 , 0 , 0 ,1              | _zero:0 Z:0   mxr:0   One:1
+0008 00000 00000 00011 00010      |   0 , 0 , 17,16             | xor:0   res:0 x:17  y:16
+000c 00000 00000 00000 00000      |   0 , 0 , 0 ,0              | my:0    empty slots
+0010 00009 00009 0000a 00014      |   res,res,x;                | main function res=x
+0014 0000b 0000c 00005 00018      |   y  , my , Z;              | my  = - y
+0018 0000c 00009 00005 0001c      |   my , res, Z;              | res = x + y
+001c 00008 00008 0000a 00020      |   xor, xor, x;              | xor = x
+0020 00005 00008 0000b 00024      |   Z  , xor, y;              | xor = x ^ y
+0024 00008 00006 00005 00028      |   xor, mxr,Z;               | mxr = -xor
+0028 00006 00009 00005 1002c      |   mxr, res,Z_shift;         | res = (res + xor ) >> 1
+002c 00004 00004 00004 0002c      |   _zero,_zero,_zero,_loop   | End of program
+--------------------------------------------------------------------------------
 Intel Hex Format Files that are used on simulator:
 
  Each Intel Hex block in the SLXS simulator contains the following data:
@@ -187,4 +190,23 @@ Intel Hex Format Files that are used on simulator:
   5. Data, six hex digits.
   6. Checksum, two hex digits, a computed value that can be used to verify the
      record has no errors.
+-------------------------------------
+The output from the assembler has to be split in four files of intel hex format. An example
+for the OR is the following:
+
+    mem0.hex            mem1.hex          mem2.hex            mem3.hex       
+:03000000000004f9 |:03000000000004f9 |:03000000000004f9 |:03000000000010ed
+:03000100000000fc |:03000100000000fc |:03000100000000fc |:03000100000001fb
+:03000200000000fb |:03000200000000fb |:03000200000011ea |:03000200000010eb
+:03000300000000fa |:03000300000000fa |:03000300000000fa |:03000300000000fa
+:03000400000009f0 |:03000400000009f0 |:0300040000000aef |:03000400000014e5
+:0300050000000bed |:0300050000000cec |:03000500000005f3 |:03000500000018e0
+:0300060000000ceb |:03000600000009ee |:03000600000005f2 |:0300060000001cdb
+:03000700000008ee |:03000700000008ee |:0300070000000aec |:03000700000020d6
+:03000800000005f0 |:03000800000008ed |:0300080000000bea |:03000800000024d1
+:03000900000008ec |:03000900000006ee |:03000900000005ef |:03000900000028cc
+:03000a00000006ed |:03000a00000009ea |:03000a00000005ee |:03000a0001002cc6
+:03000b00000004ee |:03000b00000004ee |:03000b00000004ee |:03000b0000002cc6
+:00000001FF       |:00000001FF       |:00000001FF       |:00000001FF
+
 --------------------------------------------------------------------------------
