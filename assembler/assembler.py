@@ -47,14 +47,20 @@ def main(argv):
             sys.exit()
         # Calls the read_file function.
         elif opt in ("-i","--input"):
+            print "Creating output.txt memory file.."
             read_file(arg)
             memory_creation()
             write_file()
+            print "output.txt is succesfuly created"
         #Splits memory on 4 hex_intel files.
         elif opt in ("-s","--intel_hex"):
             print "Creating hex_intel files.."
             intel_hex_converter()
             print "Files were succesfuly created"
+
+# The read_file() function takes the input file and splits the code into variables
+# and instructions. It also strips the comments and handles some common errors
+# that may occur.
 def read_file(filename):
     #Read the file.
     global variables
@@ -139,6 +145,8 @@ def read_file(filename):
                 var_counter+=1
     f.close()
 
+# The memory_creation() function creates the memory array that contains the addresses.
+# The memory first contains the variables and the the instuctions.
 def memory_creation():
     #Create memory blocks format address + [v,v,v,v]
     global memory
@@ -170,6 +178,11 @@ def memory_creation():
         temp.append(0)
     memory[i].append(temp)
     i+=1
+
+    #Leave space for variables from program. If i want to implient it.
+    # for x in xrange (i,i+100):
+    #     memory[x].append([0,0,0,0])
+    # i+=100
 
     functions = [] # Contains function_name, address.
 

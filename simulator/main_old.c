@@ -23,11 +23,11 @@ int main(int argc, char **argv){
   unsigned int size, address, type, data, sum;
   int mem[4][16384];
   int A, B, C, D, addr_B, PC=0,Delta, Gamma, Theta;;
-  int i;
+  int i, round=0;
   int count_file=0;
-  int output=1;
+  int output=0;
 
-  if(argc < 5){
+  if(argc < 6){
     printf("ERROR: to run the program you need to provide 4 input files for memeory data.\n");
     return -1;
   }
@@ -36,6 +36,7 @@ int main(int argc, char **argv){
   file[1]=fopen(argv[2], "r");
   file[2]=fopen(argv[3], "r");
   file[3]=fopen(argv[4], "r");
+  output = strtol (argv[5],NULL,10);
 
   // Read input files ///////////////////////////////////////////
   while(count_file < 4){
@@ -57,9 +58,8 @@ int main(int argc, char **argv){
   fclose(file[2]);
   fclose(file[3]);
   ///////////////////////////////////////////////////////////////
-  //Print memory before
-  printf("Memory Before:\n");
-  for(i=0;i<15;i++){
+
+  for(i=0;i<6;i++){
     printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
   }
   // core ///////////////////////////////////////////////////////
@@ -67,7 +67,15 @@ int main(int argc, char **argv){
         (mem[0][(PC>>2) & 16383]==mem[1][(PC>>2) & 16383]
          && mem[1][(PC>>2) & 16383]==mem[2][(PC>>2) & 16383]
          && mem[3][(PC>>2) & 16383]==PC)){
-
+    printf("##%d##\n", round++);
+    printf("PC = %05x\n", PC);
+    printf("PC>>2& = %05x\n", (PC>>2) & 16383);
+    //    for(i=0;i<11;i++){
+    //    for(i=64;i<87;i++){
+    //    for(i=15870;i<15877;i++){
+    //for(i=158;i<170;i++){
+    //   printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
+    // }
     // Read address /////////////////////////////////////////////
     A = mem[PC & 3][(PC>>2) & 65535];
     addr_B = mem[(PC+1) & 3][((PC+1)>>2) & 16383] & 65535;
@@ -101,20 +109,17 @@ int main(int argc, char **argv){
   }
   ///////////////////////////////////////////////////////////////
 
-  //Print memory after CPU
-  printf ("Memory after:\n");
-  for(i=0;i<15;i++){
+  printf("##%d##\n", round);
+  printf("PC = %05x\n", PC);
+  for(i=0;i<6;i++){
     printf("%05x %05x %05x %05x %05x\n", i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
   }
-
-  //Print memory
+  //Print memory if arg5=1//
   if(output==1){
-    printf ("Creating memory file...");
     file[0]=fopen("output.hex", "w");
-    for(i=0;i<15;i++){
+    for(i=0;i<6;i++){
       fprintf(file[0], "%05x %05x %05x %05x %05x\n",i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
     }
-    printf("finished!\n");
     fclose(file[0]);
   }
 

@@ -163,7 +163,7 @@ mxr, res,Z_shift;
 
 Result:                                         Explanation:
                                     The first column indicates the memory address.
-                                    the other have either the values or addresses.
+                                    the other four are what values the adresses in the block contain.
 0000 00004 00004 00004 00010      |   _zero,_zero ,_zero,_main  | Jump to main
 0004 00000 00000 00000 00001      |   0 , 0 , 0 ,1              | _zero:0 Z:0   mxr:0   One:1
 0008 00000 00000 00011 00010      |   0 , 0 , 17,16             | xor:0   res:0 x:17  y:16
@@ -224,3 +224,9 @@ Options:
     that can be used in the simulator.
 -----------
 Simulator:
+The simulator takes the four intel_hex files and creates the final state of the
+memory in an output file.
+Compile code:
+  make
+Run code:
+  ./slxs.exe mem0.hex  mem1.hex mem2.hex mem3.hex
