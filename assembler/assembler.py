@@ -253,6 +253,7 @@ def memory_creation():
     #Adds loop at the end of the program.
     memory[i].append([4,4,4,memory[i][0]])
 
+# The write_file() function creates the output.txt file
 def write_file():
     #Write the file.
     f = open ("output.txt",'w')
@@ -266,6 +267,8 @@ def write_file():
 
     f.close()
 
+# The intel_hex_converter() function takes the memory array and creates four files
+# that have the intel hex format.
 def intel_hex_converter():
 
     f = [0,1,2,3]
