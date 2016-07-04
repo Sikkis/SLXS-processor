@@ -46,12 +46,24 @@ int main(int argc, char **argv){
     while(fscanf(file[4], "%x %x %x %x %x",&add,&mem[0],&mem[1],&mem[2],&mem[3])!=EOF){
 
           printf("%04x %05x %05x %05x %05x\n",add,mem[0],mem[1],mem[2],mem[3]);
-          
+
+          /*Find out if there are empty spaces on the addresses and continue filling with blank blocks*/
+          while(add != address*4){
+            for( i = 0; i < 4; i++ ){
+              int val=0;
+              /*sum is the two's compliment that is insert on the end of each block*/
+              sum = -(size+(address&0xff)+(address>>8&0xff)+type+(val&0xff)+(val>>8&0xff)+(val>>16&0xff))&0xff;
+              fprintf(file[i], "%02x%04x%02x%06x%02x\n",size,address,type,val,sum);
+            }
+            address++;
+          }
+
           for( i = 0; i < 4; i++ ){
             /*sum is the two's compliment that is insert on the end of each block*/
             sum = -(size+(address&0xff)+(address>>8&0xff)+type+(mem[i]&0xff)+(mem[i]>>8&0xff)+(mem[i]>>16&0xff))&0xff;
-            fprintf(file[i], ":%02x%04x%02x%06x%02x\n",size,address,type,mem[i],sum);
+            fprintf(file[i], "%02x%04x%02x%06x%02x\n",size,address,type,mem[i],sum);
           }
+
           address++;
 
     }

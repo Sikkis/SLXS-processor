@@ -1,0 +1,41 @@
+Z   : 0 //asdf
+mxr : 0 //ad
+One : 1
+M : -1
+asd : 1
+/*asdf*/ x    : 10
+y   : 11
+my  :  50
+
+temp: res,res,x,_SH;
+      0,One,0,back;
+
+_main: res,res,x; /*asdfsafd*/
+  y ,my , Z;
+  xor : 0Xa
+  res : 0x0
+  my,res, Z;
+  xor,xor,x;
+  1,xor,2;
+  3,xor,4;
+  5,xor,6;
+  7,xor,8;
+  0x9,xor,y;
+  Z ,xor , y;
+  mxr, res,Z,temp,_SH;
+  back: mxr,res,Z;
+  mxr,back(2),res;
+  loop: Z,Z,Z,loop;
+
+
+//Errors:
+//xor, mxr;
+//xor, mxr, Z,z,z;
+//Temp : 0x1asdf
+//Temp : 1asdf
+//Z:12
+//_z :123
+//_label: res,res,x;
+//temp: res,res,x;
+//_main: res,res,x;
+//xor,0x9,y; /*This is wrong b must not be an undefined variable*/

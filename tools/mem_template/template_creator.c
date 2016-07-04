@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 /*
- * Creates a file containing the all the addresses 
+ * Creates a file containing the all the addresses
  * that can be used. from 0000-ffff.
  */
 int main(int argc, char **argv){
@@ -12,7 +12,7 @@ int main(int argc, char **argv){
     file=fopen("template.txt", "w");
 
     while(i<=0xFFFF){
-      fprintf(file,"%04x\n",i);
+      fprintf(file,"%04x 00000 00000 00000 00000\n",i);
       i=i+4;
     }
     fclose(file);

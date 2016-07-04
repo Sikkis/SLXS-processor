@@ -39,33 +39,41 @@ Some notes:
 
 --------------------------------------------------------------------------------
 2. Instructions: 4 types: Each instruction separates variables with "," and it ends with ";"
+  Reminder slxs language contains: a,b,c,d
 
-  var = {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
-  label == {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+  number= ([0..9]+|({0x}|{0X})[0..9]*[A..F]*[a..f]*)
+  var   = {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+  label = {_}*([A..Z][a..z])+ ([A..Z][a..z][0..9])*
+
+  The a and c variables in the insruction can be undefined variables that are going to
+  be stored in the memory. An example is given in the instruction manual.
+
 
   a.Simple
     Simple instructions have 3 variables.
     Regular Expression:
-    var{,}var{,}var{;}
+    var|number{,}var{,}var|number{;}
 
   b.Jumps
-    The 4th var is the address that we want to jump to
-    var{,}var{,}var{,}label{;}
+    The label is the address that we want to jump to
+    var|number{,}var{,}var|number{,}label{;}
 
   c.Functions
-    label{:}var{,}var{,}var{;}
+    label{:}var|number{,}var{,}var|number{;}
 
   d.Functions with jump
-    label{:}var{,}var{,}var{,}var{;}
+    label{:}var|number{,}var{,}var|number{,}label{;}
 
-  For each of the previous types the string "_shift" can be appended to the
-  last variable/label to create the shift command.
+  For each of the previous types the string "_SH" can be appended as a last variable
+  to create the shift command.
+  An example of the Simple is the following:
+    var{,}var{,}var{,}{_SH;}
 --------------------------------------------------------------------------------
 3. Comments: Two types:
   Whole line:
   {\\}[^]*$
   Example:
-  \\ I am a commment
+  \\ I am a comment
 
   Boxed:
   {/*} [^]* {*/}
@@ -82,9 +90,8 @@ Labels:
 _main:
 It is the main function of the program.
 
-_shift:
-Appends at the end of the variable/label so the assembler knows to create the
-shift command
+_SH:
+Appends at the end of the instruction so the assembler knows to create the shift command.
 
 Instructions:
 _zero,_zero,_zero,_main;
@@ -92,7 +99,8 @@ This is the first line of code for each program and it jumps to the main functio
 The assembler always adds it to the start of the code.
 
 loop: _zero,_zero,_zero,loop;
-This instruction indicates the end of the program. It is also added from the assembler. It is needed so that the slxs simulator knows when to stop.
+This instruction indicates the end of the program.It is needed so that the slxs simulator
+knows when to stop.It has to be added.
 --------------------------------------------------------------------------------
 Instruction Manual:
 To define the basic instructions we need the following variables
@@ -114,7 +122,7 @@ Commands:
  ADD   : M  , var, Z  , Label       | var = var+1
  SUB   : U  , var, Z  , Label       | var = var-1
 
-the commmands can be writen without the Label if jump is not needed
+the commands can be written without the Label if jump is not needed
 ----------------------------------------
  AND + OR are more complex instructions:
  Based on x + y = (x ^ y) + 2 (x & y) and x + y = 2(x | y) - (x ^ y).
@@ -132,14 +140,14 @@ the commmands can be writen without the Label if jump is not needed
          xor, xor, x      | xor = x
          Z  , xor, y      | xor = x ^ y
          xor, mxr, Z      | mxr = -xor
-         mxr, res, Z_shift| res = (res + xor) >> 1
+         mxr, res, Z,SH   | res = (res + xor) >> 1
 
   AND  : res, res, x      | res = x
          y  , my , Z      | my  = -y
          my , res, Z      | res = x + y
          xor, xor, x      | xor = x
          Z  , xor, y      | xor = x ^ y
-         xor, res, Z_shift| res = (res - xor ) >> 1
+         xor, res, Z,SH   | res = (res - xor ) >> 1
 --------------------------------------------------------------------------------
 Code example of OR:
 Z   : 0 // zero value
@@ -158,12 +166,12 @@ my , res, Z;
 xor, xor, x;
 Z  , xor, y;
 xor, mxr,Z;
-mxr, res,Z_shift;
+mxr, res,Z,SH;
 
 
 Result:                                         Explanation:
                                     The first column indicates the memory address.
-                                    the other four are what values the adresses in the block contain.
+                                    the other four are what values the addresses in the block contain.
 0000 00004 00004 00004 00010      |   _zero,_zero ,_zero,_main  | Jump to main
 0004 00000 00000 00000 00001      |   0 , 0 , 0 ,1              | _zero:0 Z:0   mxr:0   One:1
 0008 00000 00000 00011 00010      |   0 , 0 , 17,16             | xor:0   res:0 x:17  y:16
@@ -174,8 +182,16 @@ Result:                                         Explanation:
 001c 00008 00008 0000a 00020      |   xor, xor, x;              | xor = x
 0020 00005 00008 0000b 00024      |   Z  , xor, y;              | xor = x ^ y
 0024 00008 00006 00005 00028      |   xor, mxr,Z;               | mxr = -xor
-0028 00006 00009 00005 1002c      |   mxr, res,Z_shift;         | res = (res + xor ) >> 1
+0028 00006 00009 00005 1002c      |   mxr, res,Z,SH;            | res = (res + xor ) >> 1
 002c 00004 00004 00004 0002c      |   loop                      | End of program
+
+Example of undefined variables on the previous code:
+0x10 , my , 0;
+my , res, 0;
+xor, xor, 0x11;
+0  , xor, y;
+xor, mxr,Z;
+mxr, res,Z,SH;
 --------------------------------------------------------------------------------
 Intel Hex Format Files for simulator:
 
@@ -185,7 +201,7 @@ Intel Hex Format Files for simulator:
      pairs) in the data field.
   3. Address, four hex digits, representing the 16-bit beginning memory address
     offset of the data.
-  4. Record type, two hex digits, 00 to 05,in the implimentation the 01 and 03 is
+  4. Record type, two hex digits, 00 to 05,in the implementation the 01 and 03 is
      used only
   5. Data, six hex digits.
   6. Checksum, two hex digits, a computed value that can be used to verify the
@@ -211,19 +227,28 @@ An example for the OR is the following:
 
 The four files can be now imported to the simulator.
 --------------------------------------------------------------------------------
+The option [-s| --simulator] takes the four intel_hex files and creates the final
+state of the mempory in an output file. It can be used as a separate tools if the
+four files are provided.
+
+
+
+--------------------------------------------------------------------------------
 Tools:
 -----------
 SLSX  micro assembler:
-usage: assembler.py -i <filename> [-s]
+usage: assembler.py -i <filename> [-f] [-s]
 ------------------------------------------------------------
 Options:
  1. [-h|--help] prints the help menu.
  2. [-i|--input] takes a file with SLSX code as an argument
     and creates an output file with the memory addresses.
- 3. [-s|--intel_hex] creates four files in hex_intel format
+ 3. [-f|--intel_hex] creates four files in hex_intel format
     that can be used in the simulator.
+ 4. [-s|--simulator] It simulates an slxs proccessor. The
+    four hex files created by the -f option are used.
 -----------
-Simulator:
+Simulator on c:
 The simulator takes the four intel_hex files and creates the final state of the
 memory in an output file.
 Compile code:

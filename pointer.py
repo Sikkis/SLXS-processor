@@ -100,7 +100,8 @@ def read_file(filename):
     try:
         f = open(filename, 'r')
     except IOError:
-        print "Error opening the file \nExiting .."
+        print "Error opening the file"
+        print "Exiting .."
         raise SystemExit
 
     for line in f:
@@ -127,10 +128,12 @@ def read_file(filename):
 
                 #Checks if variables in instruction have correct format. [Error Handling]
                 if len(line) > 5:
-                    print "the "+str(line)+" contains to many variables.\nExiting .."
+                    print "the "+str(line)+" contains to many variables."
+                    print "Exiting .."
                     raise SystemExit
                 elif len(line)< 3:
-                    print "the "+str(line)+" contains to few variables.\nExiting .."
+                    print "the "+str(line)+" contains to few variables."
+                    print "Exiting .."
                     raise SystemExit
                 #End of checks
 
@@ -143,7 +146,8 @@ def read_file(filename):
                 # [Error Handling]
                 #Check if variable is not a system var.
                 if line[0].startswith("_"):
-                    print "Only system can declare strings starting with '_'\nExiting .."
+                    print "Only system can declare strings starting with '_'"
+                    print "Exiting .."
                     raise SystemExit
 
                 for v in variables:
@@ -151,7 +155,8 @@ def read_file(filename):
                     #Check if variable name already exists
                     if  v[0]==line[0]:
                         print v[0]
-                        print "Variable already exists. \nExiting .."
+                        print "Variable already exists."
+                        print "Exiting .."
                         raise SystemExit
                 #End of [Error Handling]
 
@@ -177,35 +182,17 @@ def read_file(filename):
                     try:
                         variables.append([line[0],int(line[1],16),var_counter])
                     except ValueError:
-                        print "The variable on line '"+str(line)+"'is not a number.\n\nExiting .."
+                        print "The variable on line '"+str(line)+"'is not a number."
+                        print "Exiting .."
                         raise SystemExit
                 else:
                     #Checks if variable is a number [Error Handling]
                     try:
-                        #if it is a negative number change it to the compliment.
-                        if int(line[1],10) < 0:
-                            variables.append([line[0],int('{:04x}'.format(int(line[1],10)+2**17),16),var_counter])
-                        # The number is possitive
-                        else:
-                            variables.append([line[0],int(line[1],10),var_counter])
+                        variables.append([line[0],int(line[1],10),var_counter])
                     except ValueError:
-                        flag_var= False
-                        flag_address= False
-                        #if variable is a pointer
-                        if line[0].startswith('*'):
-                            flag_address= True
-                            line[0]=line[0].replace("*","")
-                        #Find the variable we want to have the value or the address.
-                        for v in variables:
-                            if v[0]== line[1]:
-                                if flag_address==True:
-                                    variables.append([line[0],v[2],var_counter])
-                                else:
-                                    variables.append([line[0],v[1],var_counter])
-                                flag_var= True
-                        if not flag_var:
-                            print "The variable "+str(line)+"is not a number or a known variable.\nExiting .."
-                            raise SystemExit
+                        print "The variable "+str(line)+"is not a number."
+                        print "Exiting .."
+                        raise SystemExit
                 if not list_flag:
                     var_counter+=1
     f.close()
@@ -237,11 +224,11 @@ def memory_creation():
             temp = []
 
     #Fill the empty variable slots.
-    if len(variables)%4!=0:
-        for x in xrange(0,4-len(variables)%4):
-            temp.append(0)
-        memory[i].append(temp)
-        i+=1
+    # if len(variables)%4!=0:
+    #     for x in xrange(0,4-len(variables)%4):
+    #         temp.append(0)
+    #     memory[i].append(temp)
+    #     i+=1
 
     #Memory address of undefined variables
 
@@ -251,6 +238,8 @@ def memory_creation():
     for x in xrange (i,i+5):
         memory[x].append([0,0,0,0])
     i+=5
+
+
 
     functions = [] # Contains function_name, address.
     possision=0
@@ -268,17 +257,15 @@ def memory_creation():
             #[Error Handling]
             #Checks if label does not start with "_"
             if  fun[0].startswith("_") and ( not fun[0].startswith("_main")):
-                print "Only system can declare labels starting with '_'\nExiting .."
+                print "Only system can declare labels starting with '_'"
+                print "Exiting .."
                 raise SystemExit
 
             #Checks for duplicate labels.
             for t in functions:
                 if fun[0] == t[0]:
-                    print "Duplicate label detected: "+str(fun[0])+"\nExiting .."
-                    raise SystemExit
-            for v in variables:
-                if fun[0] == v[0]:
-                    print "Function can not have the same name as a variable: Duplicate["+str(fun[0])+"]\nExiting .."
+                    print "Duplicate label detected: "+str(fun[0])
+                    print "Exiting .."
                     raise SystemExit
             #End of [Error Handling]
             functions.append([fun[0],memory[i][0]]) #Push to function name,address.
@@ -302,7 +289,8 @@ def memory_creation():
 
                 #if b==undefined variable exit.[Error Handling]
                 if x==1:
-                    print "Second variable cant be undefined.\nExiting .."
+                    print "Second variable cant be undefined."
+                    print "Exiting .."
                     raise SystemExit
 
                 temp.append(und_var*4+possision)
@@ -314,18 +302,23 @@ def memory_creation():
 
             #if it is not a number then check the declared variables
             except ValueError:
-                #variable is a label pointer
-                label_flag = 1
-                #add the variable to the temp
+                pointer_flag = False
                 for var in variables:
+                    if inst[x].startswith('*'):
+                        pointer_flag = True
+                        inst[x]=inst[x].replace('*','')
+
                     if inst[x] == var[0]:
-                        label_flag =0 # it is not a label flag
-                        temp.append(var[2])
+                        if pointer_flag:
+                            for v in variables:
+                                if var[1]==v[2]:
+                                    temp.append(v[2])
+                                    print v
+                            print var
+                            print inst[x]
+                        else:
+                            temp.append(var[2])
                         break
-                #add the label pointer to the temp
-                if label_flag:
-                    temp.append(inst[x])
-                    # print inst[x]
 
         #Checks if instuction is simple and adds next address.
         if len(inst) == 3:
@@ -339,21 +332,9 @@ def memory_creation():
         temp = []
         i+=1
 
-    #Find all jumps + label pointers and replace them with the addresses.
+    #Find all jumps and replace them with the addresses.
     for x in xrange(0,i):
-        for counter in xrange (0,3):
-            try:
-                int(memory[x][1][counter])
-            except ValueError:
-                if memory[x][1][counter].find('('):
-                    lbl= memory[x][1][counter].split('(')
-                    lbl[1]= lbl[1].replace(')',"")
-                    for fun in functions:
-                        if lbl[0] == fun[0]:
-                            memory[x][1][counter] = fun[1]+int(lbl[1])
-
-
-        #Jump Check if the address is a string(label).
+        #Check if the address is a string.
         try:
             int(memory[x][1][3])
         except ValueError:
@@ -361,8 +342,8 @@ def memory_creation():
                 if memory[x][1][3] == fun[0]:
                     memory[x][1][3] = fun[1]|shift_val
 
-    #Removes one line
-    i-=1
+    #Adds loop at the end of the program.
+    memory[i].append([4,4,4,memory[i][0]])
 
 # The write_file() function creates the output.txt file
 def write_file():
@@ -370,12 +351,11 @@ def write_file():
     try:
         f = open ("output.txt",'w')
     except IOError:
-        print "Error creating the file\nExiting .."
+        print "Error creating the file"
+        print "Exiting .."
         raise SystemExit
 
     #Write the file.
-    # for x in xrange(0,i+1):
-    #     print memory[x]
     for x in xrange(0,i+1):
         f.write('{:04x}'.format(memory[x][0])+" ")
         f.write('{:05x}'.format(memory[x][1][0])+" ")
@@ -397,7 +377,8 @@ def intel_hex_converter():
     try:
         f = open("output.txt", 'r')
     except IOError:
-        print "Error opening the file\nExiting .."
+        print "Error opening the file"
+        print "Exiting .."
         raise SystemExit
 
     for line in f:
@@ -417,7 +398,8 @@ def intel_hex_converter():
         f[2] = open("mem2.hex","w")
         f[3] = open("mem3.hex","w")
     except IOError:
-        print "Error creating one of the file\nExiting .."
+        print "Error creating one of the file"
+        print "Exiting .."
         raise SystemExit
 
     #Take memory array and create intel_hex files.
@@ -452,7 +434,8 @@ def simulator():
         f[2] = open("mem2.hex","r")
         f[3] = open("mem3.hex","r")
     except IOError:
-        print "Error opening one of the file\nExiting .."
+        print "Error opening one of the file"
+        print "Exiting .."
         raise SystemExit
     #memory stracture
     mem =[[],[],[],[]]
@@ -476,28 +459,26 @@ def simulator():
         addr_B = mem[(PC+1) & 3][((PC+1)>>2) & 16383] & 65535
         C = mem[(PC+2) & 3][((PC+2)>>2) & 65535]
         D = mem[(PC+3) & 3][((PC+3)>>2) & 65535]
-        print "A: "+str(A)+" addr_B: "+str(addr_B)+" C: "+str(C)+" D: "+str(D)
-        #print "A: "+str('{:04x}'.format(A))+" addr_B: "+str('{:04x}'.format(addr_B))+" C: "+str('{:04x}'.format(C))+" D: "+str('{:04x}'.format(D))
+        #print "A: "+str(A)+" addr_B: "+str(addr_B)+" C: "+str(C)+" D: "+str(D)
 
         #Read Data
         A = mem[A & 3][(A>>2) & 16383]
         B = mem[addr_B & 3][(addr_B>>2) & 16383]
         C = mem[C & 3][(C>>2) & 16383]
-        print "A: "+str(A)+" B: "+str(B)+ " C: "+str(C)
-        #print "A: "+str('{:04x}'.format(A))+" B: "+str('{:04x}'.format(B))+ " C: "+str('{:04x}'.format(C))
+        #print "A: "+str(A)+" B: "+str(B)+ " C: "+str(C)
 
         #ALU
         Delta = (B - A) & 131071
         Gamma = (Delta ^ C) & 131071
         Theta = (Gamma>>1) & 65535
-        print "Delta: "+str(Delta)+" Gamma: "+str(Gamma)+" Theta: "+str(Theta)
-        #print "Delta: "+str('{:04x}'.format(Delta))+" Gamma: "+str('{:04x}'.format(Gamma))+" Theta: "+str('{:04x}'.format(Theta))
+        #print "Delta: "+str(Delta)+" Gamma: "+str(Gamma)+" Theta: "+str(Theta)
 
         #Write to memory
         if D>>16&1:
             mem[addr_B & 3][addr_B>>2] = Theta
         else:
             mem[addr_B & 3][addr_B>>2] = Gamma
+
         #PC
         if ((Delta>>16) and 1) or Delta == 0 :
             PC = (D & 65535)
@@ -505,11 +486,12 @@ def simulator():
             PC+=4
         if (PC==(len(mem[0])-1)*4):
             break
-        print "\n"
+
     try:
         f = open ("simulator_output.txt",'w')
     except IOError:
-        print "Error creating the file\nExiting .."
+        print "Error creating the file"
+        print "Exiting .."
         raise SystemExit
 
     #Write the file.

@@ -1,0 +1,22 @@
+/*Variables*/
+
+/* List */
+List :  [0x1,0x2,3,4,5,6,7,8,9,10]
+List2 : [0x1,0x2,3,4,5,6,7,8,9,10]
+
+Z   : 0
+One : 1
+M   : -1
+counter :10
+list_add : List // The value of the variable List
+*list_add_10: List(9)
+/*Code*/
+/*main function*/
+
+_main: Z,List(0),List2(0);    //List(n)=List(n) xor List2(n)
+       M,_main(1),Z;          // List(n+1)
+       M,_main(2),Z;          // List2(n+2)
+       One,counter,Z;         // counter--
+       0,counter,Z,loop;      // LEQ goto loop
+       Z,Z,Z,_main;           // goto _main
+       loop: Z,Z,Z,loop;      // End of program

@@ -74,16 +74,17 @@ int main(int argc, char **argv){
     C = mem[(PC+2) & 3][((PC+2)>>2) & 65535];
     D = mem[(PC+3) & 3][((PC+3)>>2) & 65535];
 
+    //printf("A:%d addr_B:%d C:%d D%d:\n", A,addr_B,C,D);
     // Read data ////////////////////////////////////////////////
     A = mem[A & 3][(A>>2) & 16383];
     B = mem[addr_B & 3][(addr_B>>2) & 16383];
     C = mem[C & 3][(C>>2) & 16383];
-
+    //printf("A:%d B:%d C:%d\n", A,B,C);
     // ALU //////////////////////////////////////////////////////
     Delta = (B - A) & 131071;
     Gamma = (Delta ^ C) & 131071;
     Theta = (Gamma>>1) & 65535;
-
+    //printf("D:%d G:%d T:%d\n", Delta,Gamma,Theta);
     // Write to  memory /////////////////////////////////////////////
     if((D>>16) & 1) {
       mem[addr_B & 3][addr_B>>2] = Theta;
@@ -111,7 +112,8 @@ int main(int argc, char **argv){
   if(output==1){
     printf ("Creating memory file...");
     file[0]=fopen("output.hex", "w");
-    for(i=0;i<15;i++){
+    for(i=0;i<16384;i++){
+    //for(i=0;i<15;i++){
       fprintf(file[0], "%05x %05x %05x %05x %05x\n",i<<2, mem[0][i], mem[1][i], mem[2][i], mem[3][i]);
     }
     printf("finished!\n");
