@@ -25,6 +25,7 @@ _main: res,res,x; /*asdfsafd*/
   mxr, res,Z,temp,_SH;
   back: mxr,res,Z;
   mxr,back(2),res;
+  //kokos:Z,Z,Z,kokos; //infinite loop
   loop: Z,Z,Z,loop;
 
 
@@ -39,3 +40,5 @@ _main: res,res,x; /*asdfsafd*/
 //temp: res,res,x;
 //_main: res,res,x;
 //xor,0x9,y; /*This is wrong b must not be an undefined variable*/
+//temp: res,res,x; asdfdasf
+//res,res,xasdfdasf;

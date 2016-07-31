@@ -1,4 +1,0 @@
-svn co https://codex.cs.bham.ac.uk/svn/vxs515/SummerProject/
-svn add manual.txt
-svn add --force * --auto-props --parents --depth infinity -q
-svn commit -m ""

@@ -1,3 +1,5 @@
+/*This program calculates the AND operation.*/
+/* Variables */
 Z   : 0
 mxr : 0
 One : 1
@@ -13,5 +15,5 @@ y  , my , Z;
 my , res, Z;
 xor, xor, x;
 Z  , xor, y;
-xor, mxr, Z;
-mxr, res, Z_shift;
+xor, res, Z,_SH;
+loop: Z,Z,Z,loop;

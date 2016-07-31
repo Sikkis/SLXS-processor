@@ -16,3 +16,4 @@ xor, xor, x;
 Z  , xor, y;
 xor, mxr, Z;
 mxr, res, Z,_SH;
+loop: Z,Z,Z,loop;

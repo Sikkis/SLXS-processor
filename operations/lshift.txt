@@ -1,0 +1,24 @@
+/*This program calculates the LEFT SHIFT operation.*/
+/*Variables*/
+x:10
+y:5
+l_s:0
+counter:0
+t:0
+N:0
+Z:0
+M:-1
+
+/*Main*/
+_main:l_s,l_s,y;
+      counter,counter,Z;
+      t,t,Z;
+      x,t,Z;
+      Z,l_s,Z,loop;                 //skip if shift equals to Zero
+      ls_loop:t,x,Z;
+              t,t,Z;
+              x,t,Z;
+              M,counter,Z;
+              counter,l_s,Z,loop;
+              l_s,l_s,y,ls_loop;
+      loop:Z,Z,Z,loop;
