@@ -129,8 +129,20 @@ def read_file(filename):
     global instructions
     global var_counter
     instructions = []
-    variables = [["Zero",0,4]] # [name,value,address]
-    var_counter = 5 #The variable location inside the memory.
+    rshift_counter=0;
+    lshift_counter=0;
+    mul_counter=0;
+    div_counter=0;
+    #variables = [["Zero",0,4]] # [name,value,address]
+    #var_counter = 5 #The variable location inside the memory.
+    #var for add and or:
+    variables = [["_zero",0,4],["_flags",0,5],["_two",2,6],["_res",0,7],
+                 ["_my",0,8],["_mx",0,9],["_xor",0,10],["_mxr",0,11],
+                 ["_ty",0,12],["_tsh",0,13],["_minus",0x1FFFF,14],
+                 ["_t",0,15],["_d",0,16],["_one",1,17],["_mod",0,18],
+                 ["_counter",0,19],["_flx",0,20],["_fly",0,21],["_flxn",0,22],
+                 ["_flyn",0,23],]
+    var_counter = 24
 
     try:
         f = open(filename, 'r')
@@ -164,18 +176,245 @@ def read_file(filename):
 
                 line = line.strip(";").split(",")
 
-                #Checks if variables in instruction have correct format. [Error Handling]
-                if len(line) >=5:
-                    print line[4]
-                    if line[4]!="_SH":
-                        print "the "+str(line)+" contains to many variables.\nExiting .."
+                #Start MACRO Handling
+                #It uses the code from the directory operations and creates macros for
+                #easier use of the commands.
+                if line[0] == "_ADD":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_ADD,a,b]\nExiting .."
                         raise SystemExit
-                elif len(line)< 3:
-                    print "the "+str(line)+" contains to few variables.\nExiting .."
-                    raise SystemExit
-                #End of checks
+                    instructions.append(["_my","_my","_zero"])
+                    instructions.append([line[2],"_my","_zero"])
+                    instructions.append(["_my",line[1],"_zero"])
+                elif line[0] == "_SUB":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_SUB,a,b]\nExiting .."
+                        raise SystemExit
+                    instructions.append([line[2],line[1],"_zero"])
+                elif line[0] == "_MUL":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_MUL,a,b]\nExiting .."
+                        raise SystemExit
+                    start_string = "start_mul" +str(mul_counter)
+                    end_string = "end_mul" +str(mul_counter)
+                    neg_string = "negative_mul" +str(mul_counter)
+                    flxend_string = "flxend_mul" +str(mul_counter)
+                    flyend_string = "flyend_mul" +str(mul_counter)
+                    continue_string = "continue_mul" +str(mul_counter)
+                    continue_one_string = "continue_one_mul" +str(mul_counter)
+                    end_two_neg_string = "end_two_neg_mul" +str(mul_counter)
+                    start_two_neg_string = "start_two_neg_mul" +str(mul_counter)
+                    befend_string = "bef_end_mul" +str(mul_counter)
+                    start_n1_string = "start_n1_mul" +str(mul_counter)
+                    end_n1_string = "end_n1_mul" +str(mul_counter)
+                    one_neg_string = "one_neg_mul" +str(mul_counter)
 
-                instructions.append(line)
+                    instructions.append(["_counter","_counter","_one"])
+                    instructions.append(["_mx","_mx","_zero"])
+                    instructions.append(["_my","_my","_zero"])
+                    instructions.append(["_flx","_flx","_zero"])
+                    instructions.append(["_fly","_fly","_zero"])
+                    instructions.append(["_flxn","_flxn","_zero"])
+                    instructions.append(["_flyn","_flyn","_zero"])
+                    instructions.append(["_zero",line[1],"_zero",neg_string])
+                    instructions.append(["_zero",line[2],"_zero",neg_string])
+                    instructions.append(["_one",line[2],"_zero",end_string])
+                    instructions.append(["_minus",line[2],"_zero"])
+                    #if both numbers are possitive
+                    instructions.append(["_counter","_counter","_one"])
+                    instructions.append(["_t","_t",line[2]])
+                    instructions.append([line[1],"_mx","_zero"])
+                    instructions.append([start_string+":_mx",line[1],"_zero"])
+                    instructions.append(["_minus","_counter","_zero"])
+                    instructions.append(["_counter","_t","_zero",end_string])
+                    instructions.append(["_t","_t",line[2],start_string])
+
+                    instructions.append([neg_string+":"+line[1],"_mx","_zero",flxend_string])
+                    instructions.append(["_minus","_flx","_zero"])
+                    instructions.append(["_flx","_flxn","_zero"])
+                    instructions.append([flxend_string+":"+line[2],"_my","_zero",flyend_string])
+                    instructions.append(["_minus","_fly","_zero"])
+                    instructions.append(["_flags","_flags","_fly"])
+                    instructions.append(["_flxn","_flags","_zero"])
+                    instructions.append(["_minus","_flags","_zero"])
+
+                    instructions.append([flyend_string+":_two","_flags","_zero",continue_string])
+                    instructions.append(["_counter","_counter","_one"])
+                    instructions.append(["_one","_my","_zero",end_two_neg_string])
+                    instructions.append(["_minus","_my","_zero"])
+                    instructions.append(["_t","_t","_my"])
+                    instructions.append([start_two_neg_string+":"+line[1],"_mx","_zero"])
+                    instructions.append(["_minus","_counter","_zero"])
+                    instructions.append(["_counter","_t","_zero",end_two_neg_string])
+                    instructions.append(["_t","_t","_my",start_two_neg_string])
+                    instructions.append([end_two_neg_string+":"+line[1],line[1],"_mx",end_string])
+
+                    instructions.append([continue_string+":_zero","_flx","_zero",continue_one_string])
+                    instructions.append([line[1],line[1],"_mx",one_neg_string])
+
+                    instructions.append([continue_one_string+":_zero","_flx","_zero",befend_string])
+                    instructions.append([line[2],line[2],"_my",one_neg_string])
+
+                    instructions.append([one_neg_string+":_one",line[2],"_zero",end_string])
+                    instructions.append(["_minus",line[2],"_zero"])
+                    instructions.append(["_counter","_counter","_one"])
+                    instructions.append(["_t","_t",line[2]])
+                    instructions.append(["_mx","_mx","_zero"])
+                    instructions.append([line[1],"_mx","_zero"])
+                    instructions.append([start_n1_string+":_mx",line[1],"_zero"])
+                    instructions.append(["_minus","_counter","_zero"])
+                    instructions.append(["_counter","_t","_zero",end_n1_string])
+                    instructions.append(["_t","_t",line[2],start_n1_string])
+
+                    instructions.append([end_n1_string+":_mx","_mx","_zero"])
+                    instructions.append([line[1],"_mx","_zero"])
+                    instructions.append([line[1],line[1],"_mx",end_string])
+
+                    instructions.append([befend_string+":"+line[1],line[1],"_zero"])
+                    instructions.append([end_string+":_zero","_zero","_zero"])
+
+                    mul_counter+=1
+                elif line[0] == "_DIV":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_DIV,a,b]\nExiting .."
+                        raise SystemExit
+                    start_string = "start_div" +str(div_counter)
+                    end_string = "end_div" +str(div_counter)
+                    neg_string = "negative_div" +str(div_counter)
+                    y0_string = "yZero_div" +str(div_counter)
+                    n_string = "n_div" +str(div_counter)
+                    st_string = "st_div" +str(div_counter)
+
+                    instructions.append(["_minus",line[2],"_zero",n_string])
+                    instructions.append(["_one",line[2],"_zero",y0_string])
+                    instructions.append(["_zero","_zero","_zero",st_string])
+                    instructions.append([n_string+":_d","_d","_zero"])
+
+                    instructions.append([st_string+":_d","_d","_zero"])
+                    instructions.append(["_ty","_ty",line[2]])
+                    instructions.append([start_string+":"+line[2],line[2],"_ty"])
+                    instructions.append(["_t","_t",line[1]])
+                    instructions.append(["_minus",line[1],"_zero"])
+                    instructions.append([line[2],line[1],"_zero",neg_string])
+                    instructions.append(["_one",line[1],"_zero"])
+                    instructions.append(["_mod","_mod",line[1]])
+                    instructions.append(["_minus","_d","_zero"])
+                    instructions.append(["_mod",line[2],"_zero",start_string])
+                    instructions.append(["_zero","_zero","_zero",end_string])
+                    instructions.append([neg_string+":"+"_mod","_mod","_t"])
+                    instructions.append(["_d","_d","_zero",end_string])
+
+                    instructions.append([y0_string+":_mod","_mod","_minus"])
+                    instructions.append(["_d","_d","_minus"])
+
+                    instructions.append([end_string+":_zero","_zero","_zero"])
+                    instructions.append([line[1],line[1],"_d"])
+                    instructions.append([line[2],line[2],"_mod"])
+
+                    div_counter+=1
+                elif line[0] == "_XOR":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_XOR,a,b]\nExiting .."
+                        raise SystemExit
+                    instructions.append(["_zero",line[1],line[2]])
+                elif line[0] == "_AND":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_AND,a,b]\nExiting .."
+                        raise SystemExit
+                    instructions.append(["_res","_res",line[1]])
+                    instructions.append(["_my","_my","_zero"])
+                    instructions.append([line[2],"_my","_zero"])
+                    instructions.append(["_my","_res","_zero"])
+                    instructions.append(["_xor","_xor",line[1]])
+                    instructions.append(["_zero","_xor",line[2]])
+                    instructions.append(["_xor","_res","_zero","_SH"])
+                    instructions.append([line[1],line[1],"_res"])
+                elif line[0] == "_OR":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_OR,a,b]\nExiting .."
+                        raise SystemExit
+                    instructions.append(["_res","_res",line[1]])
+                    instructions.append(["_my","_my","_zero"])
+                    instructions.append([line[2],"_my","_zero"])
+                    instructions.append(["_my","_res","_zero"])
+                    instructions.append(["_xor","_xor",line[1]])
+                    instructions.append(["_zero","_xor",line[2]])
+                    instructions.append(["_mxr","_mxr","_zero"])
+                    instructions.append(["_xor","_mxr","_zero"])
+                    instructions.append(["_mxr","_res","_zero","_SH"])
+                    instructions.append([line[1],line[1],"_res"])
+                elif line[0] == "_RSHIFT":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_RSHIFT,a,b]\nExiting .."
+                        raise SystemExit
+                    start_string = "start_rshift" +str(rshift_counter)
+                    end_string = "end_rshift" +str(rshift_counter)
+
+                    instructions.append(["_ty","_ty",line[2]])
+                    instructions.append(["_zero","_ty","_zero",end_string])
+                    instructions.append(["_tsh","_tsh","_zero"])
+                    instructions.append([start_string+":_zero",line[1],"_zero","_SH"])
+                    instructions.append(["_minus","_tsh","_zero"])
+                    instructions.append(["_tsh","_ty","_zero",end_string])
+                    instructions.append(["_ty","_ty",line[2],start_string])
+                    instructions.append([end_string+":_zero","_zero","_zero"])
+
+                    rshift_counter+=1
+                elif line[0] == "_LSHIFT":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_LSHIFT,a,b]\nExiting .."
+                        raise SystemExit
+                    start_string = "start_lshift" +str(lshift_counter)
+                    end_string = "end_lshift" +str(lshift_counter)
+
+                    instructions.append(["_ty","_ty",line[2]])
+                    instructions.append(["_zero","_ty","_zero",end_string])
+                    instructions.append(["_tsh","_tsh","_zero"])
+                    instructions.append(["_t","_t","_zero"])
+                    instructions.append([line[1],"_t","_zero"])
+                    instructions.append([start_string+":_t",line[1],"_zero"])
+                    instructions.append(["_t","_t","_zero"])
+                    instructions.append([line[1],"_t","_zero"])
+                    instructions.append(["_minus","_tsh","_zero"])
+                    instructions.append(["_tsh","_ty","_zero",end_string])
+                    instructions.append(["_ty","_ty",line[2],start_string])
+                    instructions.append([end_string+":_zero","_zero","_zero"])
+
+                    lshift_counter+=1
+                elif line[0] == "_MOV":
+                    if len(line) != 3:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_MOV,a,b]\nExiting .."
+                        raise SystemExit
+                    instructions.append(["_zero",line[1],line[2]])
+                elif line[0] == "_CLR":
+                    if len(line) != 2:
+                        print "the "+str(line)+" has wrong format."
+                        print "Format:[_CLR,a]\nExiting .."
+                        raise SystemExit
+                    instructions.append([line[1],line[1],"_zero"])
+                else:
+                    #Checks if variables in instruction have correct format. [Error Handling]
+                    if len(line) >=5:
+                        print line[4]
+                        if line[4]!="_SH":
+                            print "the "+str(line)+" contains to many variables.\nExiting .."
+                            raise SystemExit
+                    elif len(line)< 3:
+                        print "the "+str(line)+" contains to few variables.\nExiting .."
+                        raise SystemExit
+                    #End of checks
+                    instructions.append(line)
+                    #print line
 
             #Else if line is a variable add it to array variables
             else:
@@ -301,7 +540,10 @@ def memory_creation():
 
     functions = [] # Contains function_name, address.
     possision=0
-    #Write instructions.
+
+
+    #WRITE THE INSTRUCTIONS
+    #
     flag_main = False
     for inst in instructions:
         #Check if instruction is a function and save the address.
@@ -359,7 +601,6 @@ def memory_creation():
                 if(possision%4==0):
                     und_var+=1
                     possision=0
-
             #if it is not a number then check the declared variables
             except ValueError:
                 #variable is a label pointer
@@ -374,7 +615,6 @@ def memory_creation():
                 if label_flag:
                     temp.append(inst[x])
                     # print inst[x]
-
 
         #Checks if instuction is simple and adds next address.
         if len(inst) == 3:
