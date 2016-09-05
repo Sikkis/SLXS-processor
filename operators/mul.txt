@@ -1,0 +1,78 @@
+/*This program calculates the OR operation.*/
+/* Variables */
+Z   : 0
+One : 1
+x :0
+y: -8
+counter:0
+x_n:0
+y_n:0
+until:0
+M:-1
+flx:0
+flx_n:0
+fly:0
+val2:2
+flags:0
+
+/*main function*/
+_main:Z,x,Z,neg;  //x<=0 jump to neg
+      Z,y,Z,neg;  //y<=0 jump to neg
+      One,y,Z,loop; //if y=1 end
+      M,y,Z;
+      /*If both numbers are possitive*/
+      counter,counter,One;
+      until,until,y;
+      x_n,x_n,Z;
+      x,x_n,Z;
+      start:x_n,x,Z;
+        M,counter,Z;
+        counter,until,Z,loop;
+        until,until,y,start;
+
+      neg:x,x_n,Z,flx_end;      //x=0 jump to flx_end
+      M,flx,Z;
+      flx,flx_n,Z;
+      flx_end:y,y_n,Z,fly_end;  //y=0 jump to flx_end
+      M,fly,Z;
+      flags,flags,fly;
+      flx_n,flags,Z;
+      M,flags,Z;                  //add another one so you can compare correctly
+
+
+      /*IF both numbers are negative:*/
+      fly_end:val2,flags,Z,continue; // flags==2
+      counter,counter,One;
+      One,y_n,Z,end_two_neg;
+      M,y_n,Z;
+      until,until,y_n;
+      startneg:x,x_n,Z;
+        M,counter,Z;
+        counter,until,Z,end_two_neg;
+        until,until,y_n,startneg;
+        end_two_neg:x,x,x_n,loop;
+
+      continue:Z,flx,Z,continue1;
+      x,x,x_n,oneneg;
+
+      continue1:Z,fly,Z,end;
+      y,y,y_n,oneneg;
+
+      /*If one of the two numbers is negative*/
+      oneneg:One,y,Z,loop; //if y=1 end
+            M,y,Z;
+            counter,counter,One;
+            until,until,y;
+            x_n,x_n,Z;
+            x,x_n,Z;
+            startn1:x_n,x,Z;
+              M,counter,Z;
+              counter,until,Z,endn1;
+              until,until,y,startn1;
+            endn1:x_n,x_n,Z;
+                  x,x_n,Z;
+                  x,x,x_n,loop;
+
+      /*If one of the two numbers is 0*/
+      end:x,x,Z;
+      loop: Z,Z,Z,loop;

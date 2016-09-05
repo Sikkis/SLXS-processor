@@ -1,0 +1,34 @@
+/*This program calculates the divisor and the modulo of two numbers*/
+/*Variables*/
+x:20
+y:100
+cony:8
+d:0
+mod:0
+Z:0
+M:-1
+prev_st:0
+U:1
+
+/*Main*/
+_main:M,y,Z,neg; //First check if y = 0 if it is got to yZero
+      U,y,Z,yZero;
+      Z,Z,Z,st;
+      neg:U,y,Z;
+
+      st:d,d,Z;
+      cony,cony,y;
+      start:y,y,cony;
+      prev_st,prev_st,x;
+      M,x,Z; //to make if statement less from lessequal
+      y,x,Z,negative;
+      U,x,Z;
+      mod,mod,x;
+      M,d,Z;
+      mod,y,Z,start;
+      Z,Z,Z,loop;
+      negative:mod,mod,prev_st;
+      d,d,Z,loop;
+      yZero:mod,mod,M;  //If y=Z d=-1 mod =-1 (cant be calculated)
+      d,d,M;
+      loop:Z,Z,Z,loop;

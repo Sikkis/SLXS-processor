@@ -71,28 +71,6 @@ static void pbox_layer(uint8_t s[CRYPTO_IN_SIZE])
 		s[i]=t[i];
 	}
 }
-/*
-static void pbox_layer(uint8_t s[CRYPTO_IN_SIZE])
-{
-	uint8_t i,tmp;
-	uint8_t t[8] = {0};
-	printf("\n");
-	for(i=0;i<64;i++){
-		printf("i:%d s[i/8]:%x ",i,s[i/8]);
- 		tmp= (s[i/8] >> (i%8)) &0x01;
-		printf("tmp:%x ",tmp);
- 		t[pbox[i]/8]|= tmp << (pbox[i]%8);
-		printf("pbox[i]:%x  pbox[i]mod8:%x pbox[i]/8:%x tmp<<(pbox[i]mod8):%x t[pbox[i]/8]:%x\n",pbox[i],pbox[i]%8,pbox[i]/8,tmp << (pbox[i]%8),t[pbox[i]/8]);
-		}
-
- 	//Load values to s array
- 	printf("\n");
-	for(i=0;i<8;i++){
-		printf("t[%d]:%x\n",i,t[i]);
-		s[i]=t[i];
-	}
-}
- */
 static void update_round_key(uint8_t key[CRYPTO_KEY_SIZE], const uint8_t r)
 {
 	uint8_t tmp = 0;

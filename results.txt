@@ -1,0 +1,80 @@
+ _______   ________   ______   __    __  __     ________  ______
+/       \ /        | /      \ /  |  /  |/  |   /        |/      \
+$$$$$$$  |$$$$$$$$/ /$$$$$$  |$$ |  $$ |$$ |   $$$$$$$$//$$$$$$  |
+$$ |__$$ |$$ |__    $$ \__$$/ $$ |  $$ |$$ |      $$ |  $$ \__$$/
+$$    $$< $$    |   $$      \ $$ |  $$ |$$ |      $$ |  $$      \
+$$$$$$$  |$$$$$/     $$$$$$  |$$ |  $$ |$$ |      $$ |   $$$$$$  |
+$$ |  $$ |$$ |_____ /  \__$$ |$$ \__$$ |$$ |_____ $$ |  /  \__$$ |
+$$ |  $$ |$$       |$$    $$/ $$    $$/ $$       |$$ |  $$    $$/
+$$/   $$/ $$$$$$$$/  $$$$$$/   $$$$$$/  $$$$$$$$/ $$/    $$$$$$/
+
+
+OPERATIONS:
+1.  AND
+    Size of variables: 476 bits
+    Size of code: 544 bits
+    Number of slxs cycles: 7
+
+2.  OR
+    Size of variables: 476 bits
+    Size of code: 612 bits
+    Number of slxs cycles: 8
+3.  DIV/MOD
+    Size of variables: 493 bits
+    Size of code: 1479 bits
+
+    Input: x=20, y=0
+        Number of slxs cycles: 5
+    Input: x=20,y=3
+        Number of slxs cycles: 55
+
+4.  MULTIPLY
+    Size of variables: 578 bits
+    Size of code: 3434 bits
+
+    Input: x=8,y=2
+        Number of slxs cycles: 12
+    Input: x=-8,y=2
+        Number of slxs cycles: 21
+    Input: x=-8,y=-2
+        Number of slxs cycles: 19
+    Input: x=8,y=0
+        Number of slxs cycles: 9
+
+5.  LEFT SHIFT
+    Size of variables: 476 bits
+    Size of code: 884 bits
+
+    Input: x=10,y=5
+        Number of slxs cycles: 35
+    Input: x=10,y=0
+        Number of slxs cycles: 6
+
+6.  RIGHT SHIFT
+    Size of variables: 442 bits
+    Size of code: 646 bits
+    Input: x=10,y=5
+        Number of slxs cycles: 23
+    Input: x=10,y=5
+        Number of slxs cycles: 3
+
+ALGORITHMS:
+
+1.  AES
+    Size of program: 15164 bits                                                      
+    Size of variables: 8466 bits
+    Size of code: 6698 bits
+    Number of slxs cycles: 6837
+
+2.  PRESENT
+    Normal Pbox:
+    Size of program: 20944 bits
+    Size of variables: 8381 bits
+    Size of code: 12563 bits
+    Number of slxs cycles: 297335
+
+    Precomputed Values of Pbox:
+    Size of program: 22984 bits
+    Size of variables: 11696 bits
+    Size of code: 11288 bits
+    Number of slxs cycles: 189052

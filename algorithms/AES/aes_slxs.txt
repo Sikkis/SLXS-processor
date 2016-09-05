@@ -89,8 +89,6 @@ MixColumns:c0,c0,str(0);    //c0 = st(n)
            Z,v,mod;         //v  = v xor 0x1b
            Z,Z,Z,func2;     //JMP func2
      func1:maskn,v,Z;       //v  = v + 0xff
-           Z,Z,Z;           //NOP
-           Z,Z,Z;           //NOP
      func2:t,t,Z;           //t  = 0
            c1,t,Z;          //t  = -c1
            w,w,c1;          //w  = c1
@@ -100,8 +98,6 @@ MixColumns:c0,c0,str(0);    //c0 = st(n)
            Z,w,mod;         //w  = w xor x1b
            Z,Z,Z,func4;     // JMP func4
      func3:maskn,w,Z;       //w  = w + 0xff
-           Z,Z,Z;           //NOP
-           Z,Z,Z;           //NOP
      func4:Z,w,c1;          //w  = w xor c1
            Z,v,w;           //v  = v xor w
            Z,v,c2;          //v  = v xor c2

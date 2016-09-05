@@ -1,0 +1,18 @@
+/*This program calculates the RIGHT SHIFT operation.*/
+/*Variables*/
+x:10
+y:0
+t_y:0
+Z:0
+sh_t:0
+M:-1
+
+/*Main*/
+_main:t_y,t_y,y;
+      Z,t_y,Z,loop; //shift is 0
+      sh_t,sh_t,Z;
+      rs_loop:Z,x,Z,_SH;
+             M,sh_t,Z;
+             sh_t,t_y,Z,loop;
+             t_y,t_y,y,rs_loop;
+      loop:Z,Z,Z,loop;
