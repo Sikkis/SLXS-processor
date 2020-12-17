@@ -1,8 +1,4 @@
-# summer_project
-
-The file contains how the project that it was submitted is structured. The SLXS tool is stored 
-into the tool folder with the algorithms and operators containing samples of SLXS code. The extras
-folder contains small applications that was used in the early stages of the project but may be useful.
+# SLXS processor compiler
 
 ```
 -algorithms
