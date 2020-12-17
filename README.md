@@ -1,8 +1,10 @@
 # summer_project
+
 The file contains how the project that it was submitted is structured. The SLXS tool is stored 
 into the tool folder with the algorithms and operators containing samples of SLXS code. The extras
 folder contains small applications that was used in the early stages of the project but may be useful.
 
+```
 -algorithms
     -AES
         aes_slxs.txt                | The AES algorithm implementation on SLXS
@@ -37,41 +39,41 @@ folder contains small applications that was used in the early stages of the proj
         slxs_macros.py              | The SLXS tool with macros
     README.MD                       | Readme file with how to use tutorial
     results.txt                     | Results of operators and algorithms
-------------------------------------------------------------------------------------------
-How to run SLXS tool:
-------------------------------------------------------------------------------------------  
+```
+
+## How to run SLXS tool:
+
 Inside the tool folder to run the code:
+```
 python slxs.py -i inputfile         | will create the compiled file
 python slxs.py -f                   | will create the four hex files
 python slxs.py -s                   | will use the simulator and output the file
-
+```
 Recommended use:
+```
 python slxs.py -i inputfile -f -s   | The three options together so the [-p] option will be enabled
 python slxs.py -i inputfile -f -s -p variables | Shows the requested variables
 
 option [-u] Enables the undefined variables.
-
+```
 Better explanation of the options are inside the manual.
-------------------------------------------------------------------------------------------
 
-------------------------------------------------------------------------------------------
-How to run extra material programs:
-------------------------------------------------------------------------------------------     
+## How to run extra material programs:
+
   Simulator
   Compile code:
-    make
+    `make`
   Run code:
-    ./slxs.exe mem0.hex  mem1.hex mem2.hex mem3.hex 0
-------------------------------------------------------------------------------------------
+    `./slxs.exe mem0.hex  mem1.hex mem2.hex mem3.hex 0`
+
   Intelhex_converter:
   Compile code:
-    gcc intelhex_converter.c
+    `gcc intelhex_converter.c`
   Run code:
-    ./a.out inputfile
-------------------------------------------------------------------------------------------
+    `./a.out inputfile`
+
   template_creator:
   Compile code:
-    gcc template_creator.c
+    `gcc template_creator.c`
   Run code:
-    ./a.out
-------------------------------------------------------------------------------------------   
+    `./a.out`  
